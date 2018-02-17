@@ -12,9 +12,12 @@
 from win32com.shell.shell import ShellExecuteEx
 from win32com.shell import shellcon
 
+import win32service
+import win32serviceutil
 import ctypes
 import tools
-import win32con
+# import win32con
+import socket
 
 def isAdmin() :
   if ctypes.windll.shell32.IsUserAnAdmin() :
@@ -22,8 +25,24 @@ def isAdmin() :
   else :
     return False
 
+  
+def startStopService(service_name) :
+  host_name = socket.gethostname();
+  status = win32serviceutil.QueryServiceStatus(service_name, host_name)[1];
+  
+  try :
+    if (status == win32service.SERVICE_RUNNING) :
+      win32serviceutil.StopService(service_name, host_name);
+      print("System stopped...");
+    else :
+      win32serviceutil.StartService(service_name, None, host_name);
+      print("System started...");
+      
+  except RuntimeError as r_err:
+    print("[LOG] " + r_err);
 
-def ToWinPathFormat(file_path) :
+
+def toWinPathFormat(file_path) :
   out_path = ""
   for i in range(0, len(file_path)):
     if file_path[i] == '/':
@@ -43,5 +62,3 @@ def winSudo(cmd, parameters) :
                             lpParameters = parameters
                             )
   return proc_info;
-
-
