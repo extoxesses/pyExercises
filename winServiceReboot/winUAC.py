@@ -9,15 +9,15 @@
 #
 # If 'pywin32' package does not install win32service and win32api use 'pypiwin32'
 
-from win32com.shell.shell import ShellExecuteEx
-from win32com.shell import shellcon
+import tools
 
+from win32com.shell import shellcon
+from win32com.shell.shell import ShellExecuteEx
+import ctypes
+import socket
+import win32con
 import win32service
 import win32serviceutil
-import ctypes
-import tools
-# import win32con
-import socket
 
 def isAdmin() :
   if ctypes.windll.shell32.IsUserAnAdmin() :

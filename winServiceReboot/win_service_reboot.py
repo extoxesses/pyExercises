@@ -9,16 +9,14 @@
 
 import winUAC
 
-import shutil
 import socket
 import sys
-import time
 import os
 import win32service
 import win32serviceutil
 
-import fileinput
 import fileUtils
+
 
 if (len(sys.argv) < 4) :
   print("[ERROR] Runtime exception: invalid number of parameters!");
@@ -36,25 +34,16 @@ else :
   print("[LOG] Script was running with superuser permissions!");
   status = win32serviceutil.QueryServiceStatus(service_name, host_name)[1];
 
+  # Check if the service is running ad stop it
   if (status == win32service.SERVICE_RUNNING) :
     win32serviceutil.StopService(service_name, host_name);
     print("Services" + service_name + " was stopped...");
 
-  copyFileList(getFileList(sys.argv), sys.argv[2]);
-
+  # Copy all file of interests
+  for file in sys.argv[3:]:
+    src_path, file_name = os.path.split(file);
+    fileUtils.copy(file, sys.argv[2] + "\\" + file_name, True);
+  
+  # Restart service
   win32serviceutil.StartService(service_name, None, host_name);
   print("Services" + service_name + " was restarted...");
-
-
-def copyFileList(list, dst_root) :
-  for file in list :
-    src_path, file_name = os.path.split(file);
-    fileUtils.copy(file, dst_root + file_name, True);
-    
-def getFileList(params) :
-  l = len(params);
-  input_files = list();
-  for i in range(3, l) :
-    input_files[i - 3] = params[i];
-  return input_files;
-  
