@@ -27,19 +27,19 @@ def isAdmin() :
 
   
 def startStopService(service_name) :
-  host_name = socket.gethostname();
-  status = win32serviceutil.QueryServiceStatus(service_name, host_name)[1];
+  host_name = socket.gethostname()
+  status = win32serviceutil.QueryServiceStatus(service_name, host_name)[1]
   
   try :
     if (status == win32service.SERVICE_RUNNING) :
-      win32serviceutil.StopService(service_name, host_name);
-      print("System stopped...");
+      win32serviceutil.StopService(service_name, host_name)
+      print("System stopped...")
     else :
-      win32serviceutil.StartService(service_name, None, host_name);
-      print("System started...");
+      win32serviceutil.StartService(service_name, None, host_name)
+      print("System started...")
       
   except RuntimeError as r_err:
-    print("[LOG] " + r_err);
+    print("[LOG] " + r_err)
 
 
 def toWinPathFormat(file_path) :
@@ -54,11 +54,11 @@ def toWinPathFormat(file_path) :
 
 def winSudo(cmd, parameters) :
   if type(parameters) is list :
-    parameters = tools.list2String(parameters);
+    parameters = tools.list2String(parameters)
   proc_info = ShellExecuteEx(nShow = win32con.SW_SHOWNORMAL,
                             fMask = shellcon.SEE_MASK_NOCLOSEPROCESS,
                             lpVerb = 'runas',
                             lpFile = cmd,
                             lpParameters = parameters
                             )
-  return proc_info;
+  return proc_info
